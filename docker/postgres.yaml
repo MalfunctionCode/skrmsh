@@ -1,0 +1,15 @@
+services:
+  postgres:
+    container_name: skrmsh-db
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=skrmsh_4040_admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=skrmsh
+
+volumes:
+  postgres:
