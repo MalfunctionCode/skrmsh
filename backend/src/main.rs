@@ -6,6 +6,7 @@ use dotenv::dotenv;
 
 mod models;
 mod services;
+pub mod error;
 
 #[derive(Clone)]
 struct AppState {

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use time::OffsetDateTime;
 use uuid::Uuid;
-use crate::models::player::{Player, PlayerResponse};
+use crate::models::player::{PlayerResponse};
 
 #[derive(Debug, FromRow)]
 pub struct Team{

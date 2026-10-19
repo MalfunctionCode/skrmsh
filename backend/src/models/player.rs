@@ -9,6 +9,7 @@ pub struct Player {
     pub username: String,
     pub password_hash: String,
     pub team_id: Option<Uuid>,
+    pub is_team_owner: bool,
     pub created_at: OffsetDateTime
 }
 
