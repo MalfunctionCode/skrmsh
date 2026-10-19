@@ -1,15 +1,17 @@
 use std::env;
-use axum::{Router, routing::get, extract::State};
+use axum::{Router, routing::get};
 use sqlx::{PgPool};
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
+use crate::routes::players_router;
 
 mod models;
 mod services;
 pub mod error;
+pub mod routes;
 
 #[derive(Clone)]
-struct AppState {
+pub struct AppState {
     db: PgPool,
 }
 
@@ -33,6 +35,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(hello_world))
+        .merge(players_router())
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
