@@ -3,7 +3,7 @@ use sqlx::FromRow;
 use time::OffsetDateTime;
 use uuid::Uuid;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Clone)]
 pub struct Player {
     pub id: Uuid,
     pub username: String,
@@ -17,6 +17,8 @@ pub struct Player {
 pub struct PlayerResponse {
     pub id: Uuid,
     pub username: String,
+    team_id: Option<Uuid>,
+    is_team_owner: bool,
     created_at: OffsetDateTime
 }
 
@@ -31,7 +33,9 @@ impl From<Player> for PlayerResponse {
         Self {
             id: player.id,
             username: player.username,
-            created_at: player.created_at
+            team_id: player.team_id,
+            is_team_owner: player.is_team_owner,
+            created_at: player.created_at,
         }
     }
 }

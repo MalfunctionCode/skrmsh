@@ -20,7 +20,7 @@ pub async fn get_players(
         .fetch_all(&state.db)
         .await
         .map_err(|e| match e {
-            sqlx::Error::RowNotFound => AppError::NotFound("player not found".into()),
+            sqlx::Error::RowNotFound => AppError::NotFound("no players found".into()),
             _ => AppError::Database(e),
         })?;
 
