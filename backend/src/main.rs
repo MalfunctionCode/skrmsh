@@ -1,10 +1,11 @@
 use std::env;
-use axum::{Router, routing::get};
+use axum::{routing::get, Json, Router};
+use axum::response::IntoResponse;
 use sqlx::{PgPool};
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
 use utoipa::OpenApi;
-use crate::routes::players_router;
+use crate::routes::{players_router, teams_router};
 use crate::models::team::*;
 use crate::models::player::*;
 
@@ -55,6 +56,8 @@ async fn main() {
     let app = Router::new()
         .route("/", get(hello_world))
         .merge(players_router())
+        .merge(teams_router())
+        .route("/api-docs/openapi.json", get(openapi_schema))
         .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
@@ -62,6 +65,9 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
+async fn openapi_schema() -> impl IntoResponse{
+    Json(ApiDoc::openapi())
+}
 async fn hello_world() -> &'static str {
     "Hello, world!"
 }
