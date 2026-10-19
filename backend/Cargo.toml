@@ -15,3 +15,4 @@ time = { version = "0.3.55", features = ["serde"] }
 tokio = { version = "1.52.2", features = ["full"] }
 uuid = { version = "1.28.0", features = ["v4", "serde"] }
 serde_json = "1.0.154"
+utoipa = { version = "6.0.0", features = ["axum_extras", "time", "uuid"] }

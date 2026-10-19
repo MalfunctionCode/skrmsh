@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use time::OffsetDateTime;
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 #[derive(Debug, FromRow, Clone)]
@@ -13,7 +14,7 @@ pub struct Player {
     pub created_at: OffsetDateTime
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct PlayerResponse {
     pub id: Uuid,
     pub username: String,
@@ -22,7 +23,7 @@ pub struct PlayerResponse {
     created_at: OffsetDateTime
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct CreatePlayerRequest {
     pub username: String,
     pub password: String,

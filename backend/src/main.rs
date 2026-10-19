@@ -3,12 +3,31 @@ use axum::{Router, routing::get};
 use sqlx::{PgPool};
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
+use utoipa::OpenApi;
 use crate::routes::players_router;
+use crate::models::team::*;
+use crate::models::player::*;
 
 mod models;
 mod services;
 pub mod error;
 pub mod routes;
+
+
+#[derive(OpenApi)]
+#[openapi(
+    components(
+        schemas(
+            PlayerResponse,
+            CreatePlayerRequest,
+            SingleTeamResponse,
+            TeamListResponse,
+            TeamPlayerModificationRequest,
+            CreateTeamRequest
+        )
+    )
+)]
+struct ApiDoc;
 
 #[derive(Clone)]
 pub struct AppState {

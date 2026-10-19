@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use time::OffsetDateTime;
+use utoipa::ToSchema;
 use uuid::Uuid;
 use crate::models::player::{Player, PlayerResponse};
 
@@ -11,7 +12,7 @@ pub struct Team{
     pub created_at: OffsetDateTime
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct SingleTeamResponse {
     pub id: Uuid,
     pub name: String,
@@ -19,19 +20,19 @@ pub struct SingleTeamResponse {
     pub players: Vec<PlayerResponse>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct TeamListResponse{
     pub id: Uuid,
     pub name: String
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct TeamPlayerModificationRequest {
     pub player_id: Uuid,
     pub team_id: Uuid
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct CreateTeamRequest{
     pub name: String
 }
