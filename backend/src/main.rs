@@ -1,6 +1,7 @@
 use std::env;
 use axum::{routing::get, Json, Router};
 use axum::response::IntoResponse;
+use axum_extra::extract::CookieJar;
 use sqlx::{PgPool};
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
@@ -13,7 +14,7 @@ mod models;
 mod services;
 pub mod error;
 pub mod routes;
-
+pub mod auth;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -32,7 +33,7 @@ struct ApiDoc;
 
 #[derive(Clone)]
 pub struct AppState {
-    db: PgPool,
+    db: PgPool
 }
 
 #[tokio::main]
@@ -51,14 +52,16 @@ async fn main() {
         .await
         .expect("Failed to run migrations");
 
-    let app_state = AppState { db: pool };
+    let app_state = AppState { db: pool};
 
-    let app = Router::new()
+    let api_routes = Router::new()
         .route("/", get(hello_world))
         .merge(players_router())
         .merge(teams_router())
         .route("/api-docs/openapi.json", get(openapi_schema))
         .with_state(app_state);
+
+    let app = Router::new().nest("/api", api_routes);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());

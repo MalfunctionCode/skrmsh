@@ -49,5 +49,11 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type CreatePlayerRequest = components['schemas']['CreatePlayerRequest'];
+export type CreateTeamRequest = components['schemas']['CreateTeamRequest'];
+export type PlayerResponse = components['schemas']['PlayerResponse'];
+export type SingleTeamResponse = components['schemas']['SingleTeamResponse'];
+export type TeamListResponse = components['schemas']['TeamListResponse'];
+export type TeamPlayerModificationRequest = components['schemas']['TeamPlayerModificationRequest'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

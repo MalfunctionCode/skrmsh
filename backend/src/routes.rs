@@ -10,6 +10,8 @@ pub fn players_router() -> Router<AppState>{
         .route("/players/{id}", get(get_player))
         .route("/players", post(create_player))
         .route("/players/verify", post(verify_player))
+        .route("/players/me", get(get_me))
+        .route("/players/logout", post(logout))
 }
 
 pub fn teams_router() -> Router<AppState>{

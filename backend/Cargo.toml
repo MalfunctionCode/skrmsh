@@ -16,3 +16,5 @@ tokio = { version = "1.52.2", features = ["full"] }
 uuid = { version = "1.28.0", features = ["v4", "serde"] }
 serde_json = "1.0.154"
 utoipa = { version = "6.0.0", features = ["axum_extras", "time", "uuid"] }
+jsonwebtoken = { version = "11.1.0", features = ["rust_crypto"] }
+axum-extra = { version = "0.12.6", features = ["cookie"] }

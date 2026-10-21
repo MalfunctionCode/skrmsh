@@ -8,10 +8,13 @@ use axum::{
     response::IntoResponse,
     Json,
 };
+use axum_extra::extract::cookie::{Cookie, SameSite};
+use axum_extra::extract::CookieJar;
 use uuid::Uuid;
 use crate::error::AppError;
 use crate::models::player::{CreatePlayerRequest, Player, PlayerResponse};
 use crate::AppState;
+use crate::auth::{generate_jwt, verify_jwt};
 
 pub async fn get_players(
     State(state): State<AppState>,
@@ -45,6 +48,7 @@ pub async fn get_player(
 
 pub async fn create_player(
     State(state): State<AppState>,
+    jar: CookieJar,
     Json(req): Json<CreatePlayerRequest>,
 ) -> Result<impl IntoResponse, AppError> {
     let password_hash = Argon2::default()
@@ -64,11 +68,19 @@ pub async fn create_player(
         .fetch_one(&state.db)
         .await?;
 
-    Ok((StatusCode::CREATED, Json(PlayerResponse::from(player))))
+    let cookie = Cookie::build(("token", generate_jwt(player.id)?))
+        .http_only(true)
+        .same_site(SameSite::Lax)
+        .path("/")
+        .max_age(time::Duration::days(7))
+        .build();
+
+    Ok((jar.add(cookie), Json(PlayerResponse::from(player))))
 }
 
 pub async fn verify_player(
     State(state): State<AppState>,
+    jar: CookieJar,
     Json(req): Json<CreatePlayerRequest>,
 ) -> Result<impl IntoResponse, AppError> {
     let player = sqlx::query_as!(
@@ -87,5 +99,30 @@ pub async fn verify_player(
         .verify_password(req.password.as_bytes(), &parsed_hash)
         .map_err(|_| AppError::Unauthorized)?;
 
+    let cookie = Cookie::build(("token", generate_jwt(player.id)?))
+        .http_only(true)
+        .same_site(SameSite::Lax)
+        .path("/")
+        .max_age(time::Duration::days(7))
+        .build();
+
+    Ok((jar.add(cookie), Json(PlayerResponse::from(player))))
+}
+
+pub async fn get_me(State(state): State<AppState>,
+jar:CookieJar) -> Result<impl IntoResponse, AppError> {
+    let token = jar.get("token").ok_or(AppError::Unauthorized)?.value();
+
+    let player_id = verify_jwt(token)?;
+
+    let player = sqlx::query_as!(Player, "SELECT * FROM players WHERE id = $1", player_id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| AppError::Unauthorized)?;
+
     Ok(Json(PlayerResponse::from(player)))
+}
+
+pub async fn logout(jar: CookieJar) -> impl IntoResponse {
+    jar.remove(Cookie::build("token").path("/"))
 }

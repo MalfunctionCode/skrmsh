@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-	  "generate:api": "openapi-typescript http://localhost:3000/api-docs/openapi.json -o src/lib/api/schema.ts",
+	  "generate:api": "openapi-typescript http://localhost:3000/api/api-docs/openapi.json -o src/lib/api/schema.ts --root-types --root-types-no-schema-prefix",
 		"dev": "npm run generate:api && vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
