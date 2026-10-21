@@ -4,7 +4,8 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+	  "generate:api": "openapi-typescript http://localhost:3000/api-docs/openapi.json -o src/lib/api/schema.ts",
+		"dev": "npm run generate:api && vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
