@@ -2,64 +2,83 @@
 	import { goto } from '$app/navigation';
 	import favicon from '$lib/assets/favicon.svg';
 	import defaultPfp from '$lib/assets/placeholderPfp.jpg';
-	import { isLoggedIn, isOnTeam, player } from '$lib/stores/auth';
+
+	let { children, data } = $props();
+
+	let isLoggedIn = $derived(data.me !== null);
+	let isOnTeam = $derived(data.me !== null && data.me.team_id !== null);
 
 	async function logout() {
-		await fetch('/api/logout', { method: 'POST' });
-		player.set(null);
+		await fetch('/api/players/logout', { method: 'POST' });
+		data.me = null;
 		goto('/');
 	}
-
-	$inspect($player);
-
-	let { children } = $props();
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<nav>
-	<h1>SKRMSH</h1>
-	<div id="navLinks">
-		<div class="subgroup">
-			<h2>Teams</h2>
-			<i class="fa fa-chevron-right"></i>
-		</div>
-		<div class="subgroup">
-			<h2>Players</h2>
-			<i class="fa fa-chevron-right"></i>
-		</div>
-		<div class="subgroup">
-			<h2>Scrims</h2>
-			<i class="fa fa-chevron-right"></i>
-		</div>
-	</div>
-	<div id="userElements">
-		{#if $isOnTeam}
+<div class="app">
+	<nav>
+		<h1>SKRMSH</h1>
+		<div id="navLinks">
 			<div class="subgroup">
-				<img src={defaultPfp} alt="Team" />
-				<h2>Team</h2>
+				<h2>Teams</h2>
+				<i class="fa fa-chevron-right"></i>
 			</div>
-		{/if}
-
-		{#if $isLoggedIn}
 			<div class="subgroup">
-				<img src={defaultPfp} alt="Profile" />
-				<h2>Profile</h2>
-				<i class="fa fa-sign-out" id="logout" aria-hidden="true" onclick={()=>logout()} ></i>
+				<h2>Players</h2>
+				<i class="fa fa-chevron-right"></i>
 			</div>
+			<div class="subgroup">
+				<h2>Scrims</h2>
+				<i class="fa fa-chevron-right"></i>
+			</div>
+		</div>
+		<div id="userElements">
+			{#if isOnTeam}
+				<div class="subgroup">
+					<img src={defaultPfp} alt="Team" />
+					<h2>Team</h2>
+				</div>
+			{/if}
 
-		{:else}
-			<button onclick={() => goto('/login')}>Login</button>
-		{/if}
-	</div>
-</nav>
-<hr />
+			{#if isLoggedIn}
+				<button
+					class="subgroup"
+					onclick={() => {
+						goto(`/profile/${data.me?.id}`);
+					}}
+				>
+					<img src={defaultPfp} alt="Profile" />
+					<h2>Profile</h2>
+					<i class="fa fa-sign-out" id="logout" aria-hidden="true" onclick={() => logout()}></i>
+				</button>
+			{:else}
+				<button onclick={() => goto('/login')}>Login</button>
+			{/if}
+		</div>
+	</nav>
+	<hr />
 
-{@render children()}
+	<main>
+		{@render children()}
+	</main>
+</div>
 
 <style>
+	.app {
+		height: 100dvh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	main {
+		flex: 1;
+		min-height: 0;
+	}
+
 	nav {
 		display: flex;
 		flex-direction: row;
@@ -109,11 +128,14 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		cursor: pointer;
+		background-color: #000;
+		border: none;
 	}
 
-	#logout{
-	    font-size:40px;
-		cursor:pointer;
+	#logout {
+		font-size: 40px;
+		cursor: pointer;
 	}
 
 	#navLinks {

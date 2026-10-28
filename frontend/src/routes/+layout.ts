@@ -1,13 +1,15 @@
+import type { PlayerResponse } from '$lib/api/schema';
 import type { LayoutLoad } from './$types';
-import { player } from '$lib/stores/auth';
 
 export const ssr = false;
 
 export const load: LayoutLoad = async ({ fetch }) => {
-  try {
-    const res = await fetch('/api/players/me');
-    player.set(res.ok ? await res.json() : null)
-  } catch {
-    player.set(null)
-  }
-}
+	let me: PlayerResponse | null = null;
+
+	const res = await fetch('/api/players/me');
+	if (res.ok) {
+		me = await res.json();
+	}
+
+	return { me };
+};

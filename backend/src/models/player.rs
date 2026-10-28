@@ -20,6 +20,7 @@ pub struct PlayerResponse {
     pub username: String,
     team_id: Option<Uuid>,
     is_team_owner: bool,
+    #[serde(with = "time::serde::rfc3339")]
     created_at: OffsetDateTime
 }
 

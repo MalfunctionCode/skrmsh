@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { player } from '$lib/stores/auth';
 	import type { CreatePlayerRequest } from '$lib/api/schema';
 
 	let unameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
@@ -36,8 +35,6 @@
 			});
 
 			if (res.ok) {
-				const data = await res.json();
-				player.set(data);
 				goto('/');
 			}
 		} else {
@@ -48,8 +45,6 @@
 			});
 
 			if (res.ok) {
-				const data = await res.json();
-				player.set(data);
 				goto('/');
 			}
 		}
