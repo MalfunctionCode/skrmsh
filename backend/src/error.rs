@@ -6,6 +6,7 @@ pub enum AppError {
     NotFound(String),
     Database(sqlx::Error),
     Unauthorized,
+    BadRequest(String),
     Internal(String)
 }
 
@@ -22,6 +23,7 @@ impl IntoResponse for AppError {
                 StatusCode::UNAUTHORIZED,
                 "unauthorized".into(),
             ),
+            AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
             AppError::Internal(msg)=>(
                 StatusCode::INTERNAL_SERVER_ERROR, msg,
             ),

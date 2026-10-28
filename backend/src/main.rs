@@ -1,7 +1,6 @@
 use std::env;
 use axum::{routing::get, Json, Router};
 use axum::response::IntoResponse;
-use axum_extra::extract::CookieJar;
 use sqlx::{PgPool};
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;

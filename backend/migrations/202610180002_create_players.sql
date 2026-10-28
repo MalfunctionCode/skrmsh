@@ -7,5 +7,7 @@ CREATE TABLE players (
     username      VARCHAR(50) NOT NULL UNIQUE,
     team_id       UUID REFERENCES teams(id),
     is_team_owner boolean not null default FALSE,
+    twitch_link   TEXT DEFAULT NULL,
+    discord       TEXT DEFAULT NULL,
     created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

@@ -11,6 +11,8 @@ pub struct Player {
     pub password_hash: String,
     pub team_id: Option<Uuid>,
     pub is_team_owner: bool,
+    pub twitch_link: Option<String>,
+    pub discord: Option<String>,
     pub created_at: OffsetDateTime
 }
 
@@ -18,10 +20,12 @@ pub struct Player {
 pub struct PlayerResponse {
     pub id: Uuid,
     pub username: String,
-    team_id: Option<Uuid>,
-    is_team_owner: bool,
+    pub team_id: Option<Uuid>,
+    pub is_team_owner: bool,
+    pub twitch_link: Option<String>,
+    pub discord: Option<String>,
     #[serde(with = "time::serde::rfc3339")]
-    created_at: OffsetDateTime
+    pub created_at: OffsetDateTime
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
@@ -36,6 +40,8 @@ impl From<Player> for PlayerResponse {
             id: player.id,
             username: player.username,
             team_id: player.team_id,
+            twitch_link: player.twitch_link,
+            discord: player.discord,
             is_team_owner: player.is_team_owner,
             created_at: player.created_at,
         }
