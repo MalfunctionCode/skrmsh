@@ -1,6 +1,7 @@
 use axum::{Router, routing::{get,post,put}};
 
 use crate::AppState;
+use crate::services::hero_service::get_heroes;
 use crate::services::player_service::*;
 use crate::services::team_service::*;
 
@@ -22,4 +23,9 @@ pub fn teams_router() -> Router<AppState>{
         .route("/teams", post(create_team))
         .route("/teams/add", put(add_player_to_team))
         .route("/teams/set_captain", put(set_player_as_captain))
+}
+
+pub fn heroes_router() -> Router<AppState>{
+    Router::new()
+        .route("/heroes", get(get_heroes))
 }

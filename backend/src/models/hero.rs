@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
 use utoipa::ToSchema;
 
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Serialize, FromRow, ToSchema)]
 pub struct Hero{
     pub id: i16,
     pub slug: String,
@@ -20,6 +21,7 @@ pub enum HeroTier{
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct TierlistEntry{
     pub hero_id: i16,
+    pub slug: String,
     pub tier: HeroTier
 }
 

@@ -5,9 +5,10 @@ use sqlx::{PgPool};
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
 use utoipa::OpenApi;
-use crate::routes::{players_router, teams_router};
+use crate::routes::*;
 use crate::models::team::*;
 use crate::models::player::*;
+use crate::models::hero::*;
 
 mod models;
 mod services;
@@ -24,7 +25,11 @@ pub mod auth;
             SingleTeamResponse,
             TeamListResponse,
             TeamPlayerModificationRequest,
-            CreateTeamRequest
+            CreateTeamRequest,
+            Hero,
+            HeroTier,
+            TierlistEntry,
+            UpdateTierlistRequest
         )
     )
 )]
@@ -57,6 +62,7 @@ async fn main() {
         .route("/", get(hello_world))
         .merge(players_router())
         .merge(teams_router())
+        .merge(heroes_router())
         .route("/api-docs/openapi.json", get(openapi_schema))
         .with_state(app_state);
 
